@@ -19,9 +19,9 @@ jobs:
 
       - name: Create Signing Catalog file
         run: |
-           echo "PDMShell_2.0.0.0_x64__js1tz8fjwkn8m_1.msix" > catalog.txt  # Replace with your MSI filename
+           echo "PDMShell_2.0.0.0_x64__vc6zdtrpq1k38_2.msix" > catalog.txt  # Replace with your MSI filename
 
-      - name: Sign MSI using Azure Trusted Signing
+      - name: Sign MSIX using Azure Trusted Signing
         uses: azure/trusted-signing-action@v0.3.16
         with:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -37,10 +37,10 @@ jobs:
 
       - name: Verify Signature (PowerShell)
         run: |
-          Get-AuthenticodeSignature -FilePath "PDMShell_2.0.0.0_x64__js1tz8fjwkn8m_1.msix"
+          Get-AuthenticodeSignature -FilePath "PDMShell_2.0.0.0_x64__vc6zdtrpq1k38_2.msix"
 
-      - name: Upload Signed MSI as Artifact
+      - name: Upload Signed MSIX as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: signed-msi
-          path: "PDMShell_2.0.0.0_x64__js1tz8fjwkn8m_1.msix"
+          name: signed-msix
+          path: "PDMShell_2.0.0.0_x64__vc6zdtrpq1k38_2.msix"
