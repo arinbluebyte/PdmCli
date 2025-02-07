@@ -1,1 +1,46 @@
 
+name: Sign MSIX with Azure Trusted Signing
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sign-msi:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: List files in the workspace (for debugging)
+        run: Get-ChildItem -Path ${{ github.workspace }} -Recurse
+
+      - name: Create Signing Catalog file
+        run: |
+           echo "PDMShell_2.0.0.0_x64__js1tz8fjwkn8m_1.msix" > catalog.txt  # Replace with your MSI filename
+
+      - name: Sign MSI using Azure Trusted Signing
+        uses: azure/trusted-signing-action@v0.3.16
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: https://wus2.codesigning.azure.net/  # Change if using a different region
+          code-signing-account-name: BLUE-BYTE-SYSTEMS-INC
+          certificate-profile-name: certificate
+          files-catalog: ${{ github.workspace }}\catalog.txt
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+
+      - name: Verify Signature (PowerShell)
+        run: |
+          Get-AuthenticodeSignature -FilePath "PDMShell_2.0.0.0_x64__js1tz8fjwkn8m_1.msix"
+
+      - name: Upload Signed MSI as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-msi
+          path: "PDMShell_2.0.0.0_x64__js1tz8fjwkn8m_1.msix"
