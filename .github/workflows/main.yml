@@ -13,9 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: List files in the workspace (for debugging)
+        run: Get-ChildItem -Path ${{ github.workspace }} -Recurse
+
       - name: Create Signing Catalog file
         run: |
-          echo "pdmcli.msi" > catalog.txt  # Replace with your MSI filename
+           echo "pdmcli.msi" > catalog.txt  # Replace with your MSI filename
 
       - name: Sign MSI using Azure Trusted Signing
         uses: azure/trusted-signing-action@v0.3.16
@@ -23,10 +26,29 @@ jobs:
           azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
           azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          endpoint: https://wus2.codesigning.azure.net/
+          endpoint: https://wus2.codesigning.azure.net/  # Change if using a different region
           code-signing-account-name: BLUE-BYTE-SYSTEMS-INC
           certificate-profile-name: certificate
           files-catalog: ${{ github.workspace }}\catalog.txt
           file-digest: SHA256
           timestamp-rfc3161: http://timestamp.acs.microsoft.com
           timestamp-digest: SHA256
+
+      - name: Verify Signature (PowerShell)
+        run: |
+          Get-AuthenticodeSignature -FilePath "pdmcli.msi"
+
+      - name: Upload Signed MSI as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: signed-msi
+          path: "pdmcli.msi"
+
+      - name: Commit Signed MSI Back to Repo
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add pdmcli.msi
+          git commit -m "Added signed MSI"
+          git push
+        continue-on-error: true  # Prevent errors if no changes occur
