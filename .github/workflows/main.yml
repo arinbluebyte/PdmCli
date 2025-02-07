@@ -13,9 +13,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: List files in the workspace (for debugging)
+        run: Get-ChildItem -Path ${{ github.workspace }} -Recurse
+
       - name: Create Signing Catalog file
         run: |
-          echo "setup.msi" > catalog.txt  # Replace with your MSI filename
+          echo "${{ github.workspace }}\setup.msi" > catalog.txt  # Ensure the correct file path
 
       - name: Sign MSI using Azure Trusted Signing
         uses: azure/trusted-signing-action@v0.3.16
