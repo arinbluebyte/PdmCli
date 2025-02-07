@@ -1,0 +1,32 @@
+name: Sign MSI with Azure Trusted Signing
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sign-msi:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create Signing Catalog file
+        run: |
+          echo "setup.msi" > catalog.txt  # Replace with your MSI filename
+
+      - name: Sign MSI using Azure Trusted Signing
+        uses: azure/trusted-signing-action@v0.3.16
+        with:
+          azure-tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          azure-client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          azure-client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+          endpoint: https://eus.codesigning.azure.net/
+          code-signing-account-name: BLUE-BYTE-SYSTEMS-INC
+          certificate-profile-name: certificate
+          files-catalog: ${{ github.workspace }}\catalog.txt
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
