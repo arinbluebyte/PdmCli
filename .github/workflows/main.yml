@@ -18,7 +18,7 @@ jobs:
 
       - name: Create Signing Catalog file
         run: |
-          echo "${{ github.workspace }}\setup.msi" > catalog.txt  # Ensure the correct file path
+          echo "${{ github.workspace }}\pdmcli.msi" > catalog.txt  # Ensure the correct file path
 
       - name: Sign MSI using Azure Trusted Signing
         uses: azure/trusted-signing-action@v0.3.16
