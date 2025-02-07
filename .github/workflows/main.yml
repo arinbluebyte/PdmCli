@@ -43,12 +43,3 @@ jobs:
         with:
           name: signed-msi
           path: "pdmcli.msi"
-
-      - name: Commit Signed MSI Back to Repo
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add pdmcli.msi
-          git commit -m "Added signed MSI"
-          git push
-        continue-on-error: true  # Prevent errors if no changes occur
