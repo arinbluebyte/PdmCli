@@ -24,17 +24,14 @@ jobs:
             echo "PuTTY psftp.exe found!"
           }
       
-      - name: Upload MSI to SFTP Server using WinSCP
-        shell: powershell
-        run: |
-          $WinSCPscript = @"
-          open sftp://${{ secrets.SFTP_USERNAME }}:${{ secrets.SFTP_PASSWORD }}@${{ secrets.SFTP_HOST }} -hostkey=*
-          mkdir /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test
-          put ${{ github.workspace }}\PDMCLI.msix /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/PDMCLI.msix
-          exit
-          "@
-          $WinSCPscript | Out-File -FilePath "winscp-script.txt"
-          Start-Process -FilePath "C:\Program Files (x86)\WinSCP\winscp.com" -ArgumentList "/script=winscp-script.txt" -NoNewWindow -Wait
       
-      
+      - name: Upload MSI to SFTP Server (Port 22)
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 22
+          source: "PDMCLI.msix"
+          target: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/"
 
