@@ -49,11 +49,12 @@ jobs:
         with:
           name: signed-msix
           path: "${{ github.workspace }}/pdmcliSigned.msix"
-      - name: Upload MSI to SFTP Server
+      - name: Upload MSI to SFTP Server (Port 22)
         uses: actions/sshpass@v1
         with:
           command: |
-            sshpass -p "${{ secrets.SFTP_PASSWORD }}" sftp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
-            mkdir wp-content/pdmshell/${{ env.VERSION }}
-            put ${{ github.workspace }}/pdmcliSigned.msix /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}/pdmcli.msi
+            sshpass -p "${{ secrets.SFTP_PASSWORD }}" sftp -P 22 -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
+            mkdir -p /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}
+            put ${{ github.workspace }}/pdmcliSigned.msix /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}/pdmcliSigned.msix
             EOF
+
