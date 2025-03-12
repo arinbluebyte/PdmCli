@@ -18,13 +18,14 @@ jobs:
       
       
       
-      
       - name: Upload MSI to SFTP Server (Port 22)
-        uses: actions/sshpass@v1
+        uses: appleboy/scp-action@v0.1.4
         with:
-          command: |
-            sshpass -p "${{ secrets.SFTP_PASSWORD }}" sftp -P 22 -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
-            mkdir -p /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}
-            put "PDMCLI.msix" /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}/pdmcliSigned.msix
-            EOF
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 22
+          source: "${{ github.workspace }}/PDMCLI.msix"
+          target: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/pdmcliSigned.msix"
+      
 
