@@ -13,10 +13,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+      - name: Get Commit Message (Version Number)
+        id: get_version
+        run: echo "VERSION=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+        
       - name: List files in the workspace (for debugging)
         run: Get-ChildItem -Path ${{ github.workspace }} -Recurse
-
+      
+      
+      
       - name: Create Signing Catalog file
         run: |
            echo "PDMCLI.msix" > catalog.txt  # Replace with your MSI filename
@@ -43,4 +48,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: signed-msix
-          path: "PDMCLI.msix"
+          path: "${{ github.workspace }}/pdmcliSigned.msix"
+      - name: Upload MSI to SFTP Server
+        uses: actions/sshpass@v1
+        with:
+          command: |
+            sshpass -p "${{ secrets.SFTP_PASSWORD }}" sftp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
+            mkdir wp-content/pdmshell/${{ env.VERSION }}
+            put ${{ github.workspace }}/pdmcliSigned.msix /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}/pdmcli.msi
+            EOF
