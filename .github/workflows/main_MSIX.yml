@@ -16,16 +16,17 @@ jobs:
         
       
       
-      
-      - name: Upload MSI to SFTP Server using psftp (Windows)
+      - name: Upload MSI to SFTP Server using WinSCP
         shell: powershell
         run: |
-          echo "open ${{ secrets.SFTP_HOST }} 22" > sftp_script.txt
-          echo "user ${{ secrets.SFTP_USERNAME }} ${{ secrets.SFTP_PASSWORD }}" >> sftp_script.txt
-          echo "mkdir /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test" >> sftp_script.txt
-          echo "cd /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test" >> sftp_script.txt
-          echo "put ${{ github.workspace }}/PDMCLI.msix" >> sftp_script.txt
-          echo "bye" >> sftp_script.txt
-          & "C:\Program Files\PuTTY\psftp.exe" -b sftp_script.txt
+          $WinSCPscript = @"
+          open sftp://${{ secrets.SFTP_USERNAME }}:${{ secrets.SFTP_PASSWORD }}@${{ secrets.SFTP_HOST }} -hostkey=*
+          mkdir /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test
+          put ${{ github.workspace }}\PDMCLI.msix /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/PDMCLI.msix
+          exit
+          "@
+          $WinSCPscript | Out-File -FilePath "winscp-script.txt"
+          Start-Process -FilePath "C:\Program Files (x86)\WinSCP\winscp.com" -ArgumentList "/script=winscp-script.txt" -NoNewWindow -Wait
+      
       
 
