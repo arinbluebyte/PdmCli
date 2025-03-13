@@ -26,7 +26,7 @@ jobs:
           port: 22
           password: ${{ secrets.SFTP_PASSWORD }}
           local_path: "./pdmcli.msi"
-          remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}"
+          remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}/pdmcli.msi"
           sftp_only: true
           sftpArgs: "-vvv"
 
