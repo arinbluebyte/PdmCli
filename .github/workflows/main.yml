@@ -50,8 +50,4 @@ jobs:
           name: signed-msi
           path: "pdmcli.msi"
           
-      - name: Trigger SFTP Upload Workflow
-        run: |
-          gh workflow run upload-sftp.yml --ref main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     
