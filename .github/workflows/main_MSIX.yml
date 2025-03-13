@@ -52,16 +52,20 @@ jobs:
             VERSION_FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
             
             echo "Checking if version.txt exists..."
-            ls -lah /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/  # List directory contents
-            
+            ls -lah /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/  # Debugging step
+      
             if [[ ! -f "$VERSION_FILE" ]]; then
               echo "Creating version.txt as it does not exist."
               touch "$VERSION_FILE"
-              
+              chmod 666 "$VERSION_FILE"  # Set proper read/write permissions
             fi
+      
+            echo "Copying version.txt to a temporary location..."
+            cp "$VERSION_FILE" "/tmp/version.txt"
             
-            echo "Copying version.txt to local workspace..."
-            cat "$VERSION_FILE" > "$GITHUB_WORKSPACE/version.txt"
+            echo "Moving version.txt to the GitHub workspace..."
+            mv "/tmp/version.txt" "$GITHUB_WORKSPACE/version.txt"
+
       
       - name: Download version.txt from SFTP (using SFTP)
         uses: appleboy/ssh-action@v0.1.6
