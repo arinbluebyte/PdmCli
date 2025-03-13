@@ -22,8 +22,8 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: 22
           script: |
-            mkdir -p /home/***/html/wp-content/pdmshell_test/2.5
-            ls -ld /home/***/html/wp-content/pdmshell_test/2.5  # Verify folder creation
+            mkdir -p /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/2.5
+            ls -ld /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/2.5  # Verify folder creation
             
       - name: Deploy with Password
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
