@@ -57,7 +57,7 @@ jobs:
             if [[ ! -f "$VERSION_FILE" ]]; then
               echo "Creating version.txt as it does not exist."
               touch "$VERSION_FILE"
-              chmod 666 "$VERSION_FILE"  # Ensure it has proper read/write permissions
+              
             fi
             
             echo "Copying version.txt to local workspace..."
