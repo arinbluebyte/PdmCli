@@ -1,1 +1,10 @@
 
+name: Upload Signed MSI to SFTP
+
+on:
+  workflow_run:
+    workflows: ["Sign MSI with Azure Trusted Signing"]
+    types:
+      - completed
+
+
