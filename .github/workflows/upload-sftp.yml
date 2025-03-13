@@ -55,13 +55,24 @@ jobs:
               touch "$FILE"
             fi
             cat "$FILE" > version.txt
-      
+       # Step 2: Debugging - Show contents of version.txt after downloading
+      - name: Display contents of downloaded version.txt
+        run: |
+          echo "=== Contents of downloaded version.txt ==="
+          cat version.txt
+          echo "========================================"
+          
       - name: Append New Version to version.txt
         run: |
-          echo "" >> version.txt  # Ensure there's a new line at the end2
           echo "${{ env.VERSION }}" >> version.txt
           cat version.txt  # Debugging step to verify contents
-      
+
+      - name: Display contents of Upload version.txt
+        run: |
+          echo "=== Contents of downloaded version.txt ==="
+          cat version.txt
+          echo "========================================"
+          
       - name: Upload Updated version.txt to SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
