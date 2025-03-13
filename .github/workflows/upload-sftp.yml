@@ -1,4 +1,3 @@
-
 name: Upload Signed MSI to SFTP
 
 on:
@@ -18,6 +17,9 @@ jobs:
       - name: Get Commit Message (Version Number)
         id: get_version
         run: echo "VERSION=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+
+      - name: Define Root Path
+        run: echo "SFTP_ROOT=/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test" >> $GITHUB_ENV
   
       - name: Create Version Folder on SFTP (Using SSH)
         uses: appleboy/ssh-action@v0.1.6
@@ -27,8 +29,8 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: 22
           script: |
-            mkdir -p /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}
-            ls -ld /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}  # Verify folder creation
+            mkdir -p "${{ env.SFTP_ROOT }}/${{ env.VERSION }}"
+            ls -ld "${{ env.SFTP_ROOT }}/${{ env.VERSION }}"  # Verify folder creation
             
       - name: Upload MSI To SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
@@ -38,7 +40,7 @@ jobs:
           port: 22
           password: ${{ secrets.SFTP_PASSWORD }}
           local_path: "./PDMCLI.msix"
-          remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}"
+          remote_path: "${{ env.SFTP_ROOT }}/${{ env.VERSION }}"
           sftp_only: true
           sftpArgs: "-vvv"  # Enable verbose debugging output
 
@@ -52,14 +54,14 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: 22
           script: |
-            FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
+            FILE="${{ env.SFTP_ROOT }}/version.txt"
             echo "Checking if version.txt exists..."
-            ls -lah /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/  # List directory contents
+            ls -lah "${{ env.SFTP_ROOT }}/"  # List directory contents
             if [ ! -f "$FILE" ]; then
               echo "Creating version.txt as it does not exist."
               touch "$FILE"
             fi
-            echo "Copying version.txt to local workspace..,."
+            echo "Copying version.txt to local workspace..."
             cat "$FILE" > version.txt
 
       - name: Append New Version to version.txt on SFTP
@@ -70,9 +72,9 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: 22
           script: |
-            VERSION_FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
+            VERSION_FILE="${{ env.SFTP_ROOT }}/version.txt"
             
-            echo "Appending version '${{ env.VERSION }}' to version.txt...."
+            echo "Appending version '${{ env.VERSION }}' to version.txt..."
             
             # Ensure the file exists, then append the new version
             touch "$VERSION_FILE"
@@ -80,5 +82,3 @@ jobs:
       
             echo "Updated version.txt contents:"
             cat "$VERSION_FILE"  # Debugging step to verify contents
-
-
