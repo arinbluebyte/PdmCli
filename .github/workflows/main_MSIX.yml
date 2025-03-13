@@ -71,7 +71,7 @@ jobs:
           script: |
             VERSION_FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
             
-            echo "Appending version '${{ env.VERSION }}' to version.txt..."
+            echo "Appending version '${{ env.VERSION }}' to version.txt...."
             
             # Ensure the file exists, then append the new version
             touch "$VERSION_FILE"
