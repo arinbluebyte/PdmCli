@@ -14,17 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
-      - name: Check
-        shell: powershell
-        run: |
-          if (!(Test-Path "C:\Program Files (x86)\WinSCP\winscp.com")) {
-            echo "ERROR: psftp.exe not found!"
-            exit 1
-          } else {
-            echo "PuTTY psftp.exe found!"
-          }
-      
-      
+     
       - name: Deploy with Password
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
