@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: 22
           script: |
-            FILE="/home/***/html/wp-content/pdmshell_test/version.txt"
+            FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
             if [ ! -f "$FILE" ]; then
               echo "Creating version.txt as it does not exist."
               touch "$FILE"
