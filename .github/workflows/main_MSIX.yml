@@ -29,7 +29,7 @@ jobs:
             mkdir -p /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}
             ls -ld /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}  # Verify folder creation
             
-      - name: Deploy with Password
+      - name: Upload MSI To SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
           username: ${{ secrets.SFTP_USERNAME }}
@@ -41,7 +41,21 @@ jobs:
           sftp_only: true
           sftpArgs: "-vvv"  # Enable verbose debugging output
           
-      - name: Download version.txt from SFTP
+      - name: Check and Download version.txt from SFTP
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 22
+          script: |
+            FILE="/home/***/html/wp-content/pdmshell_test/version.txt"
+            if [ ! -f "$FILE" ]; then
+              echo "Creating version.txt as it does not exist."
+              echo "" > "$FILE"
+            fi
+
+      - name: Retrieve version.txt from SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
           username: ${{ secrets.SFTP_USERNAME }}
@@ -49,7 +63,7 @@ jobs:
           port: 22
           password: ${{ secrets.SFTP_PASSWORD }}
           local_path: "./version.txt"
-          remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
+          remote_path: "/home/***/html/wp-content/pdmshell_test/version.txt"
           sftp_only: true
           sftpArgs: "-vvv"
       
