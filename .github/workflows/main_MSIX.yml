@@ -57,7 +57,7 @@ jobs:
               touch /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt
             fi
             echo "Copying version.txt to local workspace..."
-            cat /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt > ./version.txt
+            cat /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt > ${{ github.workspace }}/version.txt
       
       - name: Download version.txt from SFTP (using SFTP)
         uses: appleboy/ssh-action@v0.1.6
@@ -78,7 +78,7 @@ jobs:
       - name: Verify version.txt exists
         run: |
           echo "Checking if version.txt was downloaded..."
-          ls -lah
+          ls -lah ${{ github.workspace }}
           cat version.txt || echo "version.txt not found!"
 
        # Step 2: Debugging - Show contents of version.txt after downloading
