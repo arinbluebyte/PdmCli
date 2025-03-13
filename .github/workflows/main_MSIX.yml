@@ -50,11 +50,37 @@ jobs:
           port: 22
           script: |
             FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
+            echo "Checking if version.txt exists..."
+            ls -lah /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/  # List directory contents
             if [ ! -f "$FILE" ]; then
               echo "Creating version.txt as it does not exist."
               touch "$FILE"
             fi
+            echo "Copying version.txt to local workspace..."
             cat "$FILE" > version.txt
+      
+      - name: Download version.txt from SFTP (using SFTP)
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 22
+          script: |
+            FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
+            if [ -f "$FILE" ]; then
+              echo "Downloading version.txt"
+              cat "$FILE"
+            else
+              echo "version.txt does not exist!"
+            fi
+      
+      - name: Verify version.txt exists
+        run: |
+          echo "Checking if version.txt was downloaded..."
+          ls -lah
+          cat version.txt || echo "version.txt not found!"
+
        # Step 2: Debugging - Show contents of version.txt after downloading
       - name: Display contents of downloaded version.txt
         run: |
@@ -84,5 +110,3 @@ jobs:
           remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
           sftp_only: true
           sftpArgs: "-vvv"
-  
-      
