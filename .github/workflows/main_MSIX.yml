@@ -22,6 +22,6 @@ jobs:
           server: ${{ secrets.SFTP_HOST }}
           port: 22
           password: ${{ secrets.SFTP_PASSWORD }}
-          local_path: "${{ github.workspace }}/PDMCLI.msix"
+          local_path: "PDMCLI.msix"
           remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/"
           sftp_only: true
