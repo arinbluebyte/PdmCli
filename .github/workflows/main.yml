@@ -7,7 +7,7 @@ on:
 
 jobs:
   sign-msi:
-    runs-on: ubuntu-latest  # <-- Change this to Ubuntu
+    runs-on: windows-latest  # <-- Change this to Ubuntu
 
     steps:
       - name: Checkout repository
