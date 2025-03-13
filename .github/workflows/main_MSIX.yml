@@ -26,3 +26,4 @@ jobs:
           remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/2.5"
           sftp_only: true
           sftpArgs: "-vvv"  # Enable verbose debugging output
+          script_before: "mkdir -p /home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/2.5"  # Ensures folder is created
