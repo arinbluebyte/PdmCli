@@ -40,6 +40,26 @@ jobs:
           remote_path: "/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/${{ env.VERSION }}"
           sftp_only: true
           sftpArgs: "-vvv"  # Enable verbose debugging output
+
+      - name: Append New Version to version.txt on SFTP
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: 22
+          script: |
+            VERSION_FILE="/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test/version.txt"
+            
+            echo "Appending version '${{ env.VERSION }}' to version.txt..."
+            
+            # Ensure the file exists, then append the new version
+            touch "$VERSION_FILE"
+            echo "${{ env.VERSION }}" >> "$VERSION_FILE"
+      
+            echo "Updated version.txt contents:"
+            cat "$VERSION_FILE"  # Debugging step to verify contents
+
           
       - name: Retrieve version.txt from SFTP (using SSH)
         uses: appleboy/ssh-action@v0.1.6
