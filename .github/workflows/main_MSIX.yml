@@ -58,7 +58,7 @@ jobs:
               echo "Creating version.txt as it does not exist."
               touch "$FILE"
             fi
-            echo "Copying version.txt to local workspace..."
+            echo "Copying version.txt to local workspace..,."
             cat "$FILE" > version.txt
 
       - name: Append New Version to version.txt on SFTP
