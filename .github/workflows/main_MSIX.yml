@@ -1,4 +1,4 @@
-name: Sign MSI with Azure Trusted Signing
+name: Sign MSIX with Azure Trusted Signing
 
 on:
   push:
@@ -44,30 +44,28 @@ jobs:
           name: signed-msi
           path: "pdmcli.msi"
           
-      
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Signed MSI from Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: signed-msi
+          path: ./  # Download to the root of the runner
   upload-msi:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # <-- Change this to Ubuntu
     needs: sign-msi
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Get Signed MSI from Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: signed-msi
-          path: ./  # Extracts it to the current working directory
-
-      - name: List Downloaded Files (Debugging)
-        run: ls -lah
-
+      
       - name: Get Commit Message (Version Number)
         id: get_version
         run: echo "VERSION=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
       - name: Define Root Path
-        run: echo "SFTP_ROOT=/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test" >> $GITHUB_ENV
-
+        run: echo "SFTP_ROOT=/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell" >> $GITHUB_ENV
+  
       - name: Create Version Folder on SFTP (Using SSH)
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -78,19 +76,21 @@ jobs:
           script: |
             mkdir -p "${{ env.SFTP_ROOT }}/${{ env.VERSION }}"
             ls -ld "${{ env.SFTP_ROOT }}/${{ env.VERSION }}"  # Verify folder creation
-
-      - name: Upload Signed MSI To SFTP
+            
+      - name: Upload MSI To SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.5
         with:
           username: ${{ secrets.SFTP_USERNAME }}
           server: ${{ secrets.SFTP_HOST }}
           port: 22
           password: ${{ secrets.SFTP_PASSWORD }}
-          local_path: "./pdmcli.msi"  # Ensure this points to the extracted MSI
-          remote_path: "${{ env.SFTP_ROOT }}/${{ env.VERSION }}/pdmcli.msi"
+          local_path: "./pdmcli.msi"
+          remote_path: "${{ env.SFTP_ROOT }}/${{ env.VERSION }}"
           sftp_only: true
           sftpArgs: "-vvv"  # Enable verbose debugging output
 
+      
+          
       - name: Retrieve versions.txt from SFTP (using SSH)
         uses: appleboy/ssh-action@v0.1.6
         with:
