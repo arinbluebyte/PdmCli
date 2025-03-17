@@ -64,7 +64,7 @@ jobs:
         run: echo "VERSION=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
 
       - name: Define Root Path
-        run: echo "SFTP_ROOT=/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell" >> $GITHUB_ENV
+        run: echo "SFTP_ROOT=/home/S8bt11tCw6zWQ7/html/wp-content/pdmshell_test" >> $GITHUB_ENV
   
       - name: Create Version Folder on SFTP (Using SSH)
         uses: appleboy/ssh-action@v0.1.6
