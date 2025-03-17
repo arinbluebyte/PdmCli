@@ -1,4 +1,4 @@
-name: Sign MSIX with Azure Trusted Signing
+name: Sign MSI with Azure Trusted Signing
 
 on:
   push:
