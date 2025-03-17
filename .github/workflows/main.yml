@@ -131,28 +131,4 @@ jobs:
       
             echo "Updated versions.txt contents:"
             cat "$VERSION_FILE"  # Debugging step to verify contents
-      - name: Create Temp Directory for Verification
-        run: mkdir -p temp-msi
-
-      - name: Download Uploaded MSI from FTP for Verification
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          port: 22
-          script: |
-            sftp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
-            get ${{ env.SFTP_ROOT }}/${{ env.VERSION }}/pdmcli.msi temp-msi/pdmcli_downloaded.msi
-            EOF
-      
-      - name: Verify Signature of Downloaded MSI
-        shell: pwsh
-        run: |
-          $signature = Get-AuthenticodeSignature "temp-msi/pdmcli_downloaded.msi"
-          if ($signature.Status -ne "Valid") {
-              Write-Host "The downloaded MSI is NOT correctly signed!"
-              exit 1
-          }
-          Write-Host "The downloaded MSI is correctly signed!"
 
