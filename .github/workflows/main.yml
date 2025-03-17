@@ -142,9 +142,9 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: 22
           script: |
-            cd "${{ env.SFTP_ROOT }}/${{ env.VERSION }}"
-            ls -lah  # List directory contents for debugging
-            scp pdmcli.msi $GITHUB_WORKSPACE/temp-msi/pdmcli_downloaded.msi
+            sftp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} <<EOF
+            get ${{ env.SFTP_ROOT }}/${{ env.VERSION }}/pdmcli.msi temp-msi/pdmcli_downloaded.msi
+            EOF
       
       - name: Verify Signature of Downloaded MSI
         shell: pwsh
