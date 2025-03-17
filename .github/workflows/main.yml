@@ -1,4 +1,4 @@
-name: Sign MSI with Azure Trusted Signing
+name: Sign MSI with Azure Trusted Signing and Upload to SFTP
 
 on:
   push:
